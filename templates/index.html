@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ввод координат</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .invalid-feedback {
+            display: none;
+        }
+        input:invalid + .invalid-feedback {
+            display: block;
+        }
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Узнай погодные условия для своего маршрута!</h1>
+        <p class="text-center">Введи координаты начальной и конечной точек</p>
+
+        <form id="coordinatesForm" action="#" method="post">
+            <div id="pointsContainer">
+                <div class="row mb-3">
+                    <div class="col">
+                        <h5>Отправная точка</h5>
+                        <div class="mb-3">
+                            <label for="start-latitude" class="form-label">Широта:</label>
+                            <input type="number" step="any" class="form-control" id="start-latitude" name="start-latitude" required min="-90" max="90">
+                            <div class="invalid-feedback">Должно быть числом между -90 и 90</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start-longitude" class="form-label">Долгота:</label>
+                            <input type="number" step="any" class="form-control" id="start-longitude" name="start-longitude" required min="-180" max="180">
+                            <div class="invalid-feedback">Должно быть числом между -180 и 180</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h5>Конечная точка</h5>
+                        <div class="mb-3">
+                            <label for="finish-latitude" class="form-label">Широта:</label>
+                            <input type="number" step="any" class="form-control" id="finish-latitude" name="finish-latitude" required min="-90" max="90">
+                            <div class="invalid-feedback">Должно быть числом между -90 и 90</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="finish-longitude" class="form-label">Долгота:</label>
+                            <input type="number" step="any" class="form-control" id="finish-longitude" name="finish-longitude" required min="-180" max="180">
+                            <div class="invalid-feedback">Должно быть числом между -180 и 180</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-column align-items-center">
+                <button type="button" class="btn btn-secondary mb-3" id="addPointBtn">Добавить точку</button>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let pointCounter = 0;
+        const MAX_POINTS = 9;
+
+        document.getElementById('addPointBtn').addEventListener('click', function() {
+            if (pointCounter >= MAX_POINTS - 1) {
+                this.disabled = true;
+                alert('Достигнуто максимальное количество точек (10)');
+                return;
+            }
+
+            pointCounter++;
+            const newPointHtml = `
+                <div class="row mb-3" id="point-${pointCounter}">
+                    <div class="col">
+                        <h5>
+                            Дополнительная точка ${pointCounter}
+                            <span class="delete-btn" onclick="deletePoint(${pointCounter})">✖</span>
+                        </h5>
+                        <div class="mb-3">
+                            <label for="extra-latitude-${pointCounter}" class="form-label">Широта:</label>
+                            <input type="number" step="any" class="form-control" id="extra-latitude-${pointCounter}" name="extra-latitude-${pointCounter}" required min="-90" max="90">
+                            <div class="invalid-feedback">Должно быть числом между -90 и 90</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="extra-longitude-${pointCounter}" class="form-label">Долгота:</label>
+                            <input type="number" step="any" class="form-control" id="extra-longitude-${pointCounter}" name="extra-longitude-${pointCounter}" required min="-180" max="180">
+                            <div class="invalid-feedback">Должно быть числом между -180 и 180</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('pointsContainer').insertAdjacentHTML('beforeend', newPointHtml);
+        });
+
+        function deletePoint(pointId) {
+            const pointElement = document.getElementById(`point-${pointId}`);
+            pointElement.remove();
+            document.getElementById('addPointBtn').disabled = false;
+            pointCounter--;
+        }
+    </script>
+</body>
+</html>
